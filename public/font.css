@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'Andy STD';
+    font-weight: bold;
+    font-style: italic;
+    src: url('font/AndyStdBoldItalic.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Andy STD';
+    font-weight: bold;
+    font-style: normal;
+    src: url('font/AndyStdBold.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Andy STD';
+    font-weight: normal;
+    font-style: normal;
+    src: url('font/AndyStdRegular.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Andy STD';
+    font-weight: normal;
+    font-style: italic;
+    src: url('font/AndyStdItalic.otf') format('opentype');
+}
