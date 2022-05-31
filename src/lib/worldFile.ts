@@ -12,6 +12,7 @@ import {
 import { Tile } from './tile';
 import {
     SwapBranch,
+    SwapLogicMeta,
     SwapMission,
     SwapMissionMeta,
     SwapTableSelection,
@@ -314,130 +315,140 @@ export class WorldFile {
     ) {
         for (const s of swaps) {
             const logicT = s.logicT[tile.normalizedType];
-            if (
-                logicT &&
-                this.checkBranches(tile, logicT.branches, x, y, map)
-            ) {
-                logicT.picker(tile);
+            if (logicT?.length > 0) {
+                const foundLogic = this.checkBranches(tile, logicT, x, y, map);
+
+                if (foundLogic) {
+                    foundLogic.picker(tile);
+                }
             }
 
             const logicW = s.logicW[tile.wall];
-            if (
-                logicW &&
-                this.checkBranches(tile, logicW.branches, x, y, map)
-            ) {
-                logicW.picker(tile);
+            if (logicW?.length > 0) {
+                const foundLogic = this.checkBranches(tile, logicW, x, y, map);
+
+                if (foundLogic) {
+                    foundLogic.picker(tile);
+                }
             }
         }
     }
 
     checkBranches(
         tile: Tile,
-        branches: SwapBranch[] | undefined,
+        logicList: SwapLogicMeta[],
         x: number,
         y: number,
         map: Array<number[][]>,
-    ): boolean {
-        if (!branches || branches.length === 0) {
-            return true;
-        }
+    ): SwapLogicMeta | undefined {
+        for (const l of logicList) {
+            if (!l.branches || l.branches.length === 0) {
+                return l;
+            }
 
-        let activeBranch: SwapBranch | null = null;
+            let activeBranch: SwapBranch | null = null;
 
-        try {
-            const compiledBranches = branches.map((b) => {
-                activeBranch = b;
+            try {
+                const compiledBranches = l.branches.map((b) => {
+                    activeBranch = b;
 
-                switch (b.type) {
-                    case EBranchType.ABOVE_X:
-                        return x > b.payload;
-                    case EBranchType.ABOVE_Y:
-                        if (b.payload < 0) {
-                            const enumValue = -b.payload - 1;
-                            return this.calculateY(y) < enumValue;
-                        } else {
-                            return y < b.payload;
-                        }
-                    case EBranchType.BELOW_Y:
-                        if (b.payload < 0) {
-                            const enumValue = -b.payload - 1;
-                            return this.calculateY(y) > enumValue;
-                        } else {
-                            return y > b.payload;
-                        }
-                    case EBranchType.IN_Y:
-                        return b.payload.includes(this.calculateY(y));
-                    case EBranchType.BEYOND_X:
-                        return x < b.payload;
-                    case EBranchType.HAS_NEARBY_TILE:
-                    case EBranchType.HAS_NEARBY_WALL:
-                        const xStart =
-                            x - b.payload.within < 0 ? 0 : x - b.payload.within;
+                    switch (b.type) {
+                        case EBranchType.ABOVE_X:
+                            return x > b.payload;
+                        case EBranchType.ABOVE_Y:
+                            if (b.payload < 0) {
+                                const enumValue = -b.payload - 1;
+                                return this.calculateY(y) < enumValue;
+                            } else {
+                                return y < b.payload;
+                            }
+                        case EBranchType.BELOW_Y:
+                            if (b.payload < 0) {
+                                const enumValue = -b.payload - 1;
+                                return this.calculateY(y) > enumValue;
+                            } else {
+                                return y > b.payload;
+                            }
+                        case EBranchType.IN_Y:
+                            return b.payload.includes(this.calculateY(y));
+                        case EBranchType.BEYOND_X:
+                            return x < b.payload;
+                        case EBranchType.HAS_NEARBY_TILE:
+                        case EBranchType.HAS_NEARBY_WALL:
+                            const xStart =
+                                x - b.payload.within < 0
+                                    ? 0
+                                    : x - b.payload.within;
 
-                        const yStart =
-                            y - b.payload.within < 0 ? 0 : y - b.payload.within;
+                            const yStart =
+                                y - b.payload.within < 0
+                                    ? 0
+                                    : y - b.payload.within;
 
-                        const xEnd =
-                            x + b.payload.within >= this.capX
-                                ? this.capX - 1
-                                : x + b.payload.within;
+                            const xEnd =
+                                x + b.payload.within >= this.capX
+                                    ? this.capX - 1
+                                    : x + b.payload.within;
 
-                        const yEnd =
-                            y + b.payload.within >= this._capY
-                                ? this._capY - 1
-                                : y + b.payload.within;
+                            const yEnd =
+                                y + b.payload.within >= this._capY
+                                    ? this._capY - 1
+                                    : y + b.payload.within;
 
-                        const id =
-                            b.payload.id -
-                            (b.type === EBranchType.HAS_NEARBY_TILE
-                                ? 0
-                                : wallOffset);
+                            const id =
+                                b.payload.id -
+                                (b.type === EBranchType.HAS_NEARBY_TILE
+                                    ? 0
+                                    : wallOffset);
 
-                        const index =
-                            b.type === EBranchType.HAS_NEARBY_TILE ? 0 : 1;
+                            const index =
+                                b.type === EBranchType.HAS_NEARBY_TILE ? 0 : 1;
 
-                        for (let _x = xStart; _x <= xEnd; _x++) {
-                            for (let _y = yStart; _y <= yEnd; _y++) {
-                                if (
-                                    map[_x][_y][index] === id &&
-                                    (x !== _x || y !== _y)
-                                ) {
-                                    return true;
+                            for (let _x = xStart; _x <= xEnd; _x++) {
+                                for (let _y = yStart; _y <= yEnd; _y++) {
+                                    if (
+                                        map[_x][_y][index] === id &&
+                                        (x !== _x || y !== _y)
+                                    ) {
+                                        return true;
+                                    }
                                 }
                             }
-                        }
 
-                        return false;
+                            return false;
+                    }
+                });
+
+                activeBranch = null;
+
+                let cond = compiledBranches[0];
+
+                for (let i = 1; i < compiledBranches.length; i++) {
+                    if (l.branches[i].or) {
+                        cond ||= compiledBranches[i];
+                    } else {
+                        cond &&= compiledBranches[i];
+                    }
                 }
-            });
 
-            activeBranch = null;
-
-            let cond = compiledBranches[0];
-
-            for (let i = 1; i < compiledBranches.length; i++) {
-                if (branches[i].or) {
-                    cond ||= compiledBranches[i];
-                } else {
-                    cond &&= compiledBranches[i];
+                if (cond) {
+                    return l;
                 }
+            } catch (err) {
+                console.error(err);
+
+                if (activeBranch !== null) {
+                    console.log(activeBranch);
+                }
+
+                throw `Error: Checking branch ${
+                    activeBranch !== null
+                        ? EBranchType[(activeBranch as SwapBranch).type]
+                        : 'unknown'
+                } for tile [${x}, ${y}][${ETileID[tile.normalizedType]}|${
+                    EWallID[tile.wall]
+                }]`;
             }
-
-            return cond;
-        } catch (err) {
-            console.error(err);
-
-            if (activeBranch !== null) {
-                console.log(activeBranch);
-            }
-
-            throw `Error: Checking branch ${
-                activeBranch !== null
-                    ? EBranchType[(activeBranch as SwapBranch).type]
-                    : 'unknown'
-            } for tile [${x}, ${y}][${ETileID[tile.normalizedType]}|${
-                EWallID[tile.wall]
-            }]`;
         }
     }
 
@@ -530,15 +541,24 @@ export class WorldFile {
 
             m.logic.forEach((l) => {
                 if (l.target >= wallOffset) {
-                    logicW[l.target - wallOffset] = {
+                    const wallTarget = l.target - wallOffset;
+                    if (!logicW[wallTarget]) {
+                        logicW[wallTarget] = [];
+                    }
+
+                    logicW[wallTarget].push({
                         ...l,
                         picker: this.createEntityPicker(l.table),
-                    };
+                    });
                 } else {
-                    logicT[l.target] = {
+                    if (!logicT[l.target]) {
+                        logicT[l.target] = [];
+                    }
+
+                    logicT[l.target].push({
                         ...l,
                         picker: this.createEntityPicker(l.table),
-                    };
+                    });
                 }
 
                 if (l.branches) {

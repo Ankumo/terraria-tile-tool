@@ -1,4 +1,3 @@
-import { BinaryWriter } from './binaryWriter';
 import { wallOffset } from './constants';
 import { EBranchType, ETileID, EWallID, EWorldYType } from './enums';
 import { SwapLogic } from './types';
@@ -30,13 +29,10 @@ export const createReplaceGrass = (target: EWallID): SwapLogic[] => [
     {
         name: `Replace grass ${EWallID[target]} below surface`,
         target: target + wallOffset,
-        table: [
-            [EWallID.FlowerUnsafe + wallOffset, 10],
-            [EWallID.GrassUnsafe, 90],
-        ],
+        table: [[EWallID.JungleUnsafe + wallOffset, 100]],
         branches: [
             {
-                payload: -EWorldYType.SURFACE - 1,
+                payload: -(EWorldYType.SURFACE + 1),
                 type: EBranchType.BELOW_Y,
             },
         ],
@@ -44,10 +40,13 @@ export const createReplaceGrass = (target: EWallID): SwapLogic[] => [
     {
         name: `Replace grass ${EWallID[target]} on surface`,
         target: target + wallOffset,
-        table: [[EWallID.JungleUnsafe + wallOffset, 100]],
+        table: [
+            [EWallID.FlowerUnsafe + wallOffset, 10],
+            [EWallID.GrassUnsafe + wallOffset, 90],
+        ],
         branches: [
             {
-                payload: -EWorldYType.SURFACE - 1,
+                payload: -(EWorldYType.UNDERGROUND + 1),
                 type: EBranchType.ABOVE_Y,
             },
         ],

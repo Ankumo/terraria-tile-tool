@@ -113,8 +113,8 @@ export type SwapMission = {
 };
 
 export type SwapMissionMeta = SwapMission & {
-    logicT: Record<number, SwapLogicMeta>;
-    logicW: Record<number, SwapLogicMeta>;
+    logicT: Record<number, SwapLogicMeta[]>;
+    logicW: Record<number, SwapLogicMeta[]>;
     withinBranch: boolean;
 };
 
