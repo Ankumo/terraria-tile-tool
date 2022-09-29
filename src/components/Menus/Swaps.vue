@@ -97,10 +97,23 @@
     margin-left: auto;
     align-items: center;
     gap: 0.5rem;
+    text-align: right;
 }
 
 .title {
     margin-left: 0.5rem;
+    --size: 1.75rem;
+    flex: 0 0 50%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.title:deep(.outline) {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
 }
 
 .icon {
@@ -111,6 +124,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .icon .tile-icon,
@@ -120,10 +134,6 @@
 
 .icon-btn-group .text {
     margin-right: 0.5rem;
-}
-
-.title {
-    --size: 1.75rem;
 }
 
 .link-group {
