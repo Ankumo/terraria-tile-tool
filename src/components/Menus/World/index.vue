@@ -125,18 +125,6 @@
 </template>
 
 <style scoped>
-.msg {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 1rem;
-}
-
-.msg .link {
-    margin-top: 1.5rem;
-}
-
 .world > .panel:not(.btn) {
     padding: 0.4rem 0.5rem;
     width: 600px;

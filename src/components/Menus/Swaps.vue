@@ -145,10 +145,6 @@
     margin-top: 1rem;
 }
 
-.msg {
-    margin-top: 1rem;
-}
-
 @media (max-width: 1600px) {
     .swaps > .panel {
         height: 450px;
