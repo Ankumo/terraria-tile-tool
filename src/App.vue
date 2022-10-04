@@ -61,19 +61,7 @@
             BG Settings
         </Link>
 
-        <div class="bottom-links">
-            <a href="https://ankumo.ru/" title="My homepage" target="_blank">
-                <img src="./assets/paw.png" />
-            </a>
-
-            <a
-                href="https://github.com/Ankumo/terraria-tile-tool"
-                title="GitHub"
-                target="_blank"
-            >
-                <img src="./assets/github.png" />
-            </a>
-        </div>
+        <BottomLinks />
     </div>
 </template>
 
@@ -142,20 +130,6 @@ body {
     box-sizing: border-box;
 }
 
-.bottom-links {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    position: fixed;
-    bottom: 1rem;
-    left: 1rem;
-}
-
-.bottom-links a img {
-    width: 24px;
-    height: 24px;
-}
-
 .btn-group {
     display: flex;
     gap: 1rem;
@@ -164,6 +138,18 @@ body {
 
 .btn-group .btn {
     flex: 0 0 calc(50% - 0.5rem);
+}
+
+.msg {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.msg .link {
+    margin-top: 1.5rem;
 }
 
 *::-webkit-scrollbar {
@@ -216,6 +202,7 @@ import Drop from './components/Menus/Drop.vue';
 import World from './components/Menus/World/index.vue';
 import Swaps from './components/Menus/Swaps.vue';
 import Swap from './components/Menus/Swap/index.vue';
+import BottomLinks from './components/BottomLinks.vue';
 
 export default defineComponent({
     components: {
@@ -228,6 +215,7 @@ export default defineComponent({
         World,
         Swaps,
         Swap,
+        BottomLinks,
     },
     data() {
         return {
