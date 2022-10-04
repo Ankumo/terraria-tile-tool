@@ -129,7 +129,7 @@ export class WorldFile {
 
             let bSkips = 0;
 
-            [222, 227, 238, 239, 241].forEach((v) => {
+            [222, 227, 238, 239, 241, 249, 266, 267].forEach((v) => {
                 if (this.v >= v) {
                     bSkips++;
                 }

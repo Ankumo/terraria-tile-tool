@@ -16,6 +16,8 @@
 import { ETileID } from '@/lib/enums';
 import { defineComponent, PropType } from 'vue';
 
+const rowTiles = 21;
+
 export default defineComponent({
     props: {
         id: {
@@ -27,8 +29,8 @@ export default defineComponent({
         pos(): { x: number; y: number } {
             const id = this.id < 0 ? 10 : this.id;
 
-            const y = Math.trunc(id / 25);
-            const x = id - y * 25;
+            const y = Math.trunc(id / rowTiles);
+            const x = id - y * rowTiles;
 
             return { x, y };
         },

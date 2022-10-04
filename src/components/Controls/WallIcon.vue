@@ -9,13 +9,15 @@
     background-image: url(../../assets/Sprites/walls.png);
     background-position: calc(var(--x) * -16px) calc(var(--y) * -16px);
     background-repeat: no-repeat;
-    background-size: 400%;
+    background-size: 1200%;
 }
 </style>
 
 <script lang="ts">
 import { EWallID } from '@/lib/enums';
 import { defineComponent, PropType } from 'vue';
+
+const rowWalls = 12;
 
 export default defineComponent({
     props: {
@@ -26,8 +28,8 @@ export default defineComponent({
     },
     computed: {
         pos(): { x: number; y: number } {
-            const y = Math.trunc(this.id / 4);
-            const x = this.id - y * 4;
+            const y = Math.trunc(this.id / rowWalls);
+            const x = this.id - y * rowWalls;
 
             return { x, y };
         },
