@@ -186,7 +186,7 @@ export class WorldFile {
 
                 this._r.offset = this._pos[1];
 
-                const tile = new Tile();
+                const tile = new Tile(this.v);
 
                 this._tilesData = new BinaryWriter(this._r.length * 3);
 
@@ -274,7 +274,7 @@ export class WorldFile {
 
         const result: Array<number[][]> = [];
 
-        const tile = new Tile();
+        const tile = new Tile(this.v);
 
         let count = 0,
             prec = 0;

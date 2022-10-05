@@ -14,27 +14,29 @@ export class Tile {
     public copies = 0;
 
     readonly solidTiles = [
-        379, 371, 357, 408, 409, 415, 416, 417, 418, 498, 232, 311, 312, 313,
-        315, 321, 322, 239, 380, 367, 357, 368, 369, 325, 460, 326, 458, 459,
-        327, 345, 328, 329, 507, 508, 421, 422, 426, 430, 431, 432, 433, 434,
-        446, 447, 448, 427, 476, 435, 436, 437, 438, 439, 284, 346, 347, 348,
-        350, 370, 383, 385, 472, 473, 500, 501, 502, 503, 541, 546, 557, 474,
-        478, 479, 562, 563, 496, 495, 396, 397, 399, 401, 398, 400, 402, 403,
-        404, 407, 170, 221, 272, 229, 230, 222, 223, 224, 225, 226, 235, 191,
-        211, 208, 192, 193, 194, 195, 200, 203, 204, 189, 190, 198, 206, 248,
-        249, 250, 251, 252, 253, 273, 274, 618, 255, 256, 257, 258, 259, 260,
-        261, 262, 263, 264, 265, 266, 267, 268, 477, 492, 202, 188, 179, 381,
-        534, 536, 539, 180, 181, 182, 183, 512, 513, 514, 515, 516, 517, 535,
-        537, 540, 196, 197, 175, 176, 177, 162, 163, 164, 234, 137, 160, 161,
-        145, 146, 147, 148, 138, 484, 140, 151, 152, 153, 154, 155, 156, 157,
-        158, 159, 127, 130, 107, 108, 111, 109, 112, 116, 117, 123, 118, 119,
-        120, 121, 122, 150, 199, 0, 1, 2, 6, 7, 8, 9, 166, 167, 168, 169, 10,
-        19, 22, 23, 25, 30, 37, 38, 39, 40, 41, 43, 44, 481, 482, 483, 45, 46,
-        47, 48, 53, 54, 56, 57, 58, 59, 60, 63, 64, 65, 66, 67, 68, 566, 75, 76,
-        70, 384, 387, 388,
+        0, 1, 2, 6, 7, 8, 9, 10, 19, 22, 23, 25, 30, 37, 38, 39, 40, 41, 43, 44,
+        45, 46, 47, 48, 53, 54, 56, 57, 58, 59, 60, 63, 64, 65, 66, 67, 68, 70,
+        75, 76, 107, 108, 109, 111, 112, 116, 117, 118, 119, 120, 121, 122, 123,
+        127, 130, 137, 138, 140, 145, 146, 147, 148, 150, 151, 152, 153, 154,
+        155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 166, 167, 168, 169,
+        170, 175, 176, 177, 179, 180, 181, 182, 183, 188, 189, 190, 191, 192,
+        193, 194, 195, 196, 197, 198, 199, 200, 202, 203, 204, 206, 208, 211,
+        221, 222, 223, 224, 225, 226, 229, 230, 232, 234, 235, 239, 248, 249,
+        250, 251, 252, 253, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264,
+        265, 266, 267, 268, 272, 273, 274, 284, 311, 312, 313, 315, 321, 322,
+        325, 326, 327, 328, 329, 345, 346, 347, 348, 350, 357, 367, 368, 369,
+        370, 371, 379, 380, 381, 383, 384, 385, 387, 388, 396, 397, 398, 399,
+        400, 401, 402, 403, 404, 407, 408, 409, 415, 416, 417, 418, 421, 422,
+        426, 427, 430, 431, 432, 433, 434, 435, 436, 437, 438, 439, 446, 447,
+        448, 458, 459, 460, 472, 473, 474, 476, 477, 478, 479, 481, 482, 483,
+        484, 492, 495, 496, 498, 500, 501, 502, 503, 507, 508, 512, 513, 514,
+        515, 516, 517, 534, 535, 536, 537, 539, 540, 541, 546, 557, 562, 563,
+        566, 618, 625, 626, 627, 628, 633, 635, 641, 659, 661, 662, 664, 666,
+        667, 668, 669, 670, 671, 672, 673, 674, 675, 676, 677, 678, 679, 680,
+        681, 682, 683, 684, 685, 686, 687, 688, 689, 690, 691, 692,
     ];
 
-    constructor(copy?: Tile) {
+    constructor(private worldFileVersion: number, copy?: Tile) {
         if (copy) {
             Object.assign(this, copy);
         }
@@ -250,6 +252,18 @@ export class Tile {
         }
     }
 
+    get shimmer() {
+        return (this.bTileHeader & 0x60) === 96;
+    }
+
+    set shimmer(val) {
+        if (val) {
+            this.bTileHeader = (this.bTileHeader & 0x9f) | 0x60;
+        } else {
+            this.bTileHeader &= 159;
+        }
+    }
+
     get wallColor() {
         return this.bTileHeader & 0x1f;
     }
@@ -308,8 +322,56 @@ export class Tile {
         return this.type === 0 ? (this.isCleared ? -1 : 0) : this.type;
     }
 
+    get invisibleBlock() {
+        return (this.bTileHeader3 & 0x20) === 32;
+    }
+
+    set invisibleBlock(val) {
+        if (val) {
+            this.bTileHeader3 |= 32;
+        } else {
+            this.bTileHeader3 &= 0xffffffdf;
+        }
+    }
+
+    get invisibleWall() {
+        return (this.bTileHeader3 & 0x40) === 64;
+    }
+
+    set invisibleWall(val) {
+        if (val) {
+            this.bTileHeader3 |= 64;
+        } else {
+            this.bTileHeader3 &= 0xffffffbf;
+        }
+    }
+
+    get fullbrightBlock() {
+        return (this.bTileHeader3 & 0x80) === 128;
+    }
+
+    set fullbrightBlock(val) {
+        if (val) {
+            this.bTileHeader3 |= 128;
+        } else {
+            this.bTileHeader3 &= 0xffffff7f;
+        }
+    }
+
+    get fullbrightWall() {
+        return (this.sTileHeader & 0x8000) === 32768;
+    }
+
+    set fullbrightWall(val) {
+        if (val) {
+            this.sTileHeader |= 32768;
+        } else {
+            this.sTileHeader &= 0xffff7fff;
+        }
+    }
+
     clone() {
-        const copy = new Tile();
+        const copy = new Tile(this.worldFileVersion);
         copy.copyFrom(this);
 
         return copy;
@@ -389,7 +451,8 @@ export class Tile {
 
         let type = -1,
             ch = 0,
-            wh = 0;
+            wh = 0,
+            nh = 0;
 
         const sh = r.readByte();
 
@@ -398,6 +461,10 @@ export class Tile {
 
             if ((wh & 1) === 1) {
                 ch = r.readByte();
+
+                if ((ch & 1) === 1) {
+                    nh = r.readByte();
+                }
             }
         }
 
@@ -449,7 +516,9 @@ export class Tile {
         if (lh !== 0) {
             this.liquid = r.readByte();
 
-            if (lh > 1) {
+            if ((ch & 0x80) === 128) {
+                this.shimmer = true;
+            } else if (lh > 1) {
                 this[lh === 2 ? 'lava' : 'honey'] = true;
             }
         }
@@ -471,7 +540,9 @@ export class Tile {
 
             if (
                 lh !== 0 &&
-                (this.isSolid || this.type === ETileID.InactiveStoneBlock)
+                (this.isSolid ||
+                    this.type === ETileID.InactiveStoneBlock ||
+                    this.type === ETileID.ChimneySmoke)
             ) {
                 if (lh === 1) {
                     this.halfBrick = true;
@@ -481,7 +552,7 @@ export class Tile {
             }
         }
 
-        if (ch > 0) {
+        if (ch > 1) {
             if ((ch & 2) === 2) {
                 this.actuator = true;
             }
@@ -503,6 +574,24 @@ export class Tile {
             }
         }
 
+        if (nh > 1) {
+            if ((nh & 2) === 2) {
+                this.invisibleBlock = true;
+            }
+
+            if ((nh & 4) === 4) {
+                this.invisibleWall = true;
+            }
+
+            if ((nh & 8) === 8) {
+                this.fullbrightBlock = true;
+            }
+
+            if ((nh & 0x10) === 16) {
+                this.fullbrightWall = true;
+            }
+        }
+
         switch ((sh & 0xc0) >> 6) {
             case 0:
                 this.copies = 0;
@@ -517,10 +606,11 @@ export class Tile {
     }
 
     write(buf: Uint8Array, imp: boolean[]) {
-        let th = 3,
+        let th = this.worldFileVersion >= 269 ? 4 : 3,
             ch = 0,
             wh = 0,
-            wallh = 0;
+            wallh = 0,
+            nh = 0;
 
         if (this.active) {
             wallh |= 2;
@@ -556,11 +646,17 @@ export class Tile {
         }
 
         if (this.liquid !== 0) {
-            wallh = this.lava
-                ? wallh | 0x10
-                : !this.honey
-                ? wallh | 8
-                : wallh | 0x18;
+            if (!this.shimmer) {
+                wallh = this.lava
+                    ? wallh | 0x10
+                    : !this.honey
+                    ? wallh | 8
+                    : wallh | 0x18;
+            } else {
+                ch |= 0x80;
+                wallh |= 8;
+            }
+
             buf[th++] = this.liquid;
         }
 
@@ -600,7 +696,28 @@ export class Tile {
             ch |= 0x40;
         }
 
-        let offset = 2;
+        if (this.invisibleBlock) {
+            nh |= 2;
+        }
+
+        if (this.invisibleWall) {
+            nh |= 4;
+        }
+
+        if (this.fullbrightBlock) {
+            nh |= 8;
+        }
+
+        if (this.fullbrightWall) {
+            nh |= 0x10;
+        }
+
+        let offset = this.worldFileVersion >= 269 ? 3 : 2;
+
+        if (nh !== 0) {
+            ch |= 1;
+            buf[offset--] = nh;
+        }
 
         if (ch !== 0) {
             wh |= 1;
