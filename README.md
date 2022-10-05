@@ -8,7 +8,7 @@
 
 &nbsp;
 
-### PC world file versions `1.3.0.1` - `1.4.4.*` are supported
+### PC world file versions `1.4.0.1` - `1.4.4.*` are supported
 
 (I believe, tested only latest version)
 
