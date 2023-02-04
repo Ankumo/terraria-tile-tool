@@ -444,6 +444,7 @@ export const defaultSwaps: SwapMission[] = [
             createReplaceTile(ETileID.CorruptSandstone, ETileID.Sandstone),
             createReplaceTile(ETileID.CorruptIce, ETileID.IceBlock),
             createReplaceTile(ETileID.CorruptPlants, ETileID.Plants),
+            createReplaceTile(ETileID.CorruptVines, ETileID.Vines),
             createReplaceWall(EWallID.EbonstoneUnsafe, EWallID.Stone),
             createReplaceWall(EWallID.EbonstoneEcho, EWallID.Stone),
             createReplaceWall(EWallID.CorruptionUnsafe1, EWallID.RocksUnsafe1),
